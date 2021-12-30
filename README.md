@@ -1,5 +1,5 @@
 # Ambeelight
-Cross-platform ambient Yeelight.
+Cross-platform ambilight for Yeelight.
 
 ## To-Do
 - [ ] CLI
