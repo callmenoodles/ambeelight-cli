@@ -1,14 +1,12 @@
 [package]
-name = "untitled"
+name = "ambeelight"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+dotenv = "0.15.0"
+yeelight = "0.4.0-rc.1"
+rgb2hex = { git = "https://github.com/callmenoodles/rgb2hex" }
+tokio = { version = "1.15.0", features = ["full"]}
 captrs = "0.3.1"
 shuteye = "0.3.3"
-yeelight = "0.4.0-rc.1"
-tokio = { version = "1.15.0", features = ["full"]}
-dotenv = "0.15.0"
-rgb2hex = { git = "https://github.com/callmenoodles/rgb2hex" }

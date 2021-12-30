@@ -1,24 +1,40 @@
+use std::{env, time::Duration};
+use yeelight::{Bulb, Effect, Mode, Power};
 use captrs::*;
 use shuteye::sleep;
-use std::time::Duration;
-use yeelight::{Bulb, Effect, Mode, Power};
 use rgb2hex;
 use tokio;
 use dotenv::dotenv;
-use std::env;
+
+// TODO: drop music conn
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<String> = env::args().collect();
+    println!("{:?}", args);
+
     dotenv().ok();
+
     let ip: String = env::var("IP_DESK").unwrap();
-    let host: &str = "192.168.2.12";
-    let interval: Duration = Duration::from_millis(250);             // ms
-    let transition_duration: Duration = Duration::from_millis(250);  // ms
-    let no_duration: Duration = Duration::from_millis(0);
+    let host: String = env::var("IP_HOST").unwrap();
+
+    // both in ms
+    let interval: u64 = 250;
+    let transition_duration: u64 = 250;
 
     let mut lamp: Bulb = Bulb::connect(&*ip, 0).await?;
-    lamp.set_power(Power::On, Effect::Sudden, no_duration, Mode::Normal).await;
-    let mut music_conn = lamp.start_music(host).await?;
+
+    let power_res = lamp.set_power(
+        Power::On,
+        Effect::Sudden,
+        Duration::from_millis(0), Mode::Normal
+    ).await;
+
+    if power_res.is_err() {
+        println!("{}", power_res.err().unwrap());
+    }
+
+    let mut music_conn = lamp.start_music(&*host).await?;
 
     let mut capturer = Capturer::new(0).unwrap();
 
@@ -43,7 +59,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         ).unwrap();
 
         if average != prev_average {
-            let res = music_conn.set_rgb(average, Effect::Smooth, transition_duration).await;
+            let res = music_conn.set_rgb(
+                average,
+                Effect::Smooth,
+                Duration::from_millis(transition_duration)
+            ).await;
 
             if res.is_err() {
                 println!("{}", res.err().unwrap());
@@ -51,8 +71,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         prev_average = average;
-        sleep(interval);
+        sleep(Duration::from_millis(interval));
     }
-
-    drop(music_conn);
 }
