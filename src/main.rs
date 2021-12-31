@@ -36,38 +36,47 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (w, h) = capturer.geometry();
     let size = w as u64 * h as u64;
     let mut prev_average = 0;
+    let mut ps_res;
 
     loop {
-        let ps = capturer.capture_frame().unwrap();
-        let (mut tot_r, mut tot_g, mut tot_b) = (0, 0, 0);
+        ps_res = capturer.capture_frame();
 
-        for Bgr8 { r, g, b, .. } in ps.into_iter() {
-            tot_r += r as u64;
-            tot_g += g as u64;
-            tot_b += b as u64;
+        if ps_res.is_err() {
+            //println!("{:?}", ps_res.err().unwrap());
         }
+        else {
+            let ps = ps_res.unwrap();
+            let (mut tot_r, mut tot_g, mut tot_b) = (0, 0, 0);
 
-        let average = rgb2hex::rgb2hex(
-            (tot_r / size) as u8,
-            (tot_g / size) as u8,
-            (tot_b / size) as u8
-        ).unwrap();
-
-        if average != prev_average {
-            let res = music_conn.set_rgb(
-                average,
-                Effect::Smooth,
-                Duration::from_millis(transition_duration)
-            ).await;
-
-            if res.is_err() {
-                println!("{}", res.err().unwrap());
+            for Bgr8 { r, g, b, .. } in ps.into_iter() {
+                tot_r += r as u64;
+                tot_g += g as u64;
+                tot_b += b as u64;
             }
+
+            let average = rgb2hex::rgb2hex(
+                (tot_r / size) as u8,
+                (tot_g / size) as u8,
+                (tot_b / size) as u8
+            ).unwrap();
+
+            if average != prev_average {
+                let res = music_conn.set_rgb(
+                    average,
+                    Effect::Smooth,
+                    Duration::from_millis(transition_duration)
+                ).await;
+
+                if res.is_err() {
+                    println!("{}", res.err().unwrap());
+                }
+            }
+
+            prev_average = average;
         }
 
-        prev_average = average;
         sleep(Duration::from_millis(interval));
     }
 
-    drop(music_conn);
+    // drop(music_conn);
 }
