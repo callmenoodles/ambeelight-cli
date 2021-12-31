@@ -1,18 +1,13 @@
+use dotenv::dotenv;
 use std::{env, time::Duration};
 use yeelight::{Bulb, Effect, Mode, Power};
 use captrs::*;
 use shuteye::sleep;
 use rgb2hex;
 use tokio;
-use dotenv::dotenv;
-
-// TODO: drop music conn
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args: Vec<String> = env::args().collect();
-    println!("{:?}", args);
-
     dotenv().ok();
 
     let ip: String = env::var("IP_DESK").unwrap();
@@ -73,4 +68,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         prev_average = average;
         sleep(Duration::from_millis(interval));
     }
+
+    drop(music_conn);
 }

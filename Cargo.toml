@@ -5,7 +5,8 @@ edition = "2021"
 
 [dependencies]
 dotenv = "0.15.0"
-yeelight = "0.4.0-rc.1"
+#yeelight = "0.4.0-rc.1"
+yeelight = { git = "https://github.com/Leixb/yeelight" }
 rgb2hex = { git = "https://github.com/callmenoodles/rgb2hex" }
 tokio = { version = "1.15.0", features = ["full"]}
 captrs = "0.3.1"
