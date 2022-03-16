@@ -2,6 +2,7 @@
 edition = "2021"
 name = "ambeelight"
 homepage = "https://github.com/callmenoodles/ambeelight"
+repository = "https://github.com/callmenoodles/ambeelight"
 authors = ["Noodles"]
 description = "Cross-platform ambilight for Yeelight."
 keywords = ["Yeelight", "Ambilight", "Light", "RGB", "Lamp", "Smart Home", "Smart Light", "Noodles", "Leixb"]
