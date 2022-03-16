@@ -1,23 +1,58 @@
-use dotenv::dotenv;
-use std::{env, time::Duration};
-use yeelight::{Bulb, Effect, Mode, Power};
+use std::{time::Duration};
+use yeelight::{Bulb, BulbError, Effect, Mode, Power, Properties, Property, Response};
+use clap::{Arg, arg, Parser};
 use captrs::*;
 use shuteye::sleep;
 use rgb2hex;
 use tokio;
 
+#[derive(Parser, Debug)]
+#[clap(author = "Noodles", version, about = "Cross-platform ambilight for Yeelight.", long_about = None)]
+struct Args {
+    #[clap(long, help = "IP address of the Yeelight", long_help = "Find your Yeelight's IP address in the Yeelight app under <Your Lamp> -> Settings -> Device Info", env = "AMBEELIGHT_YEELIGHT_IP")]
+    ip: String,
+
+    #[clap(long, help = "IP address of the host", long_help = "Usually your local network IP address", env = "AMBEELIGHT_HOST_IP")]
+    host: String,
+
+    #[clap(short, long, help = "Yeelight brightness between 1-100")]
+    brightness: Option<u8>,
+
+    #[clap(short, long, default_value_t = 250, help = "Time between screen reads in milliseconds")]
+    interval: u64,
+
+    #[clap(short, long, default_value_t = 250, help = "Transition duration in milliseconds")]
+    transition: u64
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    dotenv().ok();
+    let args = Args::parse();
 
-    let ip: String = env::var("IP_DESK").unwrap();
-    let host: String = env::var("IP_HOST").unwrap();
-
-    // both in ms
-    let interval: u64 = 250;
-    let transition_duration: u64 = 250;
+    let ip: String = args.ip;
+    let host: String = args.host;
+    let interval: u64 = args.interval;
+    let transition_duration: u64 = args.transition;
 
     let mut lamp: Bulb = Bulb::connect(&*ip, 0).await?;
+
+    let lamp_properties = Properties(vec![
+        Property::Bright
+    ]);
+
+    let curr_brightness: Option<Response> = lamp.get_prop(&lamp_properties).await?;
+    const DEFAULT_BRIGHTNESS: u8 = 50;
+
+    let brightness: u8 = match args.brightness {
+        Some(val) => val,
+        None => match curr_brightness {
+            Some(val) => match val.first() {
+                Some(v) => v.parse().unwrap(),
+                _ => DEFAULT_BRIGHTNESS
+            },
+            _ => DEFAULT_BRIGHTNESS
+        }
+    };
 
     let power_res = lamp.set_power(
         Power::On,
@@ -29,8 +64,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{}", power_res.err().unwrap());
     }
 
-    let mut music_conn = lamp.start_music(&*host).await?;
+    let bright_res = lamp.set_bright(
+        brightness,
+        Effect::Smooth,
+        Duration::from_millis(transition_duration),
+    ).await;
 
+    if bright_res.is_err() {
+        println!("{}", bright_res.err().unwrap());
+    }
+
+    let mut music_conn = lamp.start_music(&*host).await?;
     let mut capturer = Capturer::new(0).unwrap();
 
     let (w, h) = capturer.geometry();
@@ -42,7 +86,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         ps_res = capturer.capture_frame();
 
         if ps_res.is_err() {
-            //println!("{:?}", ps_res.err().unwrap());
+            println!("{:?}", ps_res.err().unwrap());
         }
         else {
             let ps = ps_res.unwrap();
@@ -77,6 +121,4 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         sleep(Duration::from_millis(interval));
     }
-
-    // drop(music_conn);
 }

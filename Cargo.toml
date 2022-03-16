@@ -1,13 +1,17 @@
 [package]
-name = "ambeelight"
-version = "0.1.0"
 edition = "2021"
+name = "ambeelight"
+authors = ["Noodles"]
+description = "Cross-platform ambilight for Yeelight."
+keywords = ["Yeelight", "Ambilight", "Light", "RGB", "Lamp", "Smart Home", "Smart Light", "Noodles", "Leixb"]
+readme = "./README.md"
+version = "0.2.0"
 
 [dependencies]
 dotenv = "0.15.0"
-#yeelight = "0.4.0-rc.1"
 yeelight = { git = "https://github.com/Leixb/yeelight" }
 rgb2hex = { git = "https://github.com/callmenoodles/rgb2hex" }
 tokio = { version = "1.15.0", features = ["full"]}
 captrs = "0.3.1"
 shuteye = "0.3.3"
+clap = { version = "3.1.6", features = ["derive", "env"] }
