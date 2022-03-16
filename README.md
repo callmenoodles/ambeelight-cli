@@ -32,4 +32,4 @@ Usually your local network IP address.
 Feel free to contribute by sending pull requests, opening issues for bugs or feature requests or by fixing issues.
 
 ## License
-[MIT]
+[MIT](LICENSE)
