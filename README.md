@@ -6,6 +6,22 @@ A cross-platform ambient lighting solution for Yeelight devices. The program wil
 - ✅ Linux
 - ❌ macOS ([captrs](https://crates.io/crates/captrs) doesn't support mac)
 
+## Installation
+### Build from source
+In order to build on *debian-based* distros, make sure you have the build dependency `libxrandr-dev` package installed.
+```
+sudo apt install -y libxrandr-dev
+```
+
+Clone the repo with and install the binary through cargo. The binary will be installed at `~/.cargo/bin` and can be unsinstalled with `cargo uninstall`
+```
+git clone git@github.com:callmenoodles/ambeelight.git
+cargo install --path .
+```
+
+### Download Binary
+Download and install the binary for your platform from [Releases.](https://github.com/callmenoodles/ambeelight/releases)
+
 ## Usage
 ### CLI
 ```
