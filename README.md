@@ -7,6 +7,22 @@ Cross-platform ambilight for Yeelight.
 ### macOS
 macOS is not supported yet, because it relies on `captrs` which does not support macOS yet either.
 
+## Installation
+### Build from source
+In order to build on *debian-based* distros, make sure you have the build dependency `libxrandr-dev` package installed.
+```
+sudo apt install -y libxrandr-dev
+```
+
+Clone the repo with and install the binary through cargo. The binary will be installed at `~/.cargo/bin` and can be unsinstalled with `cargo uninstall`
+```
+git clone git@github.com:callmenoodles/ambeelight.git
+cargo install --path .
+```
+
+### Download Binary
+Download and install the binary for your platform from [Releases.](https://github.com/callmenoodles/ambeelight/releases)
+
 ## Usage
 ### CLI
 ```
