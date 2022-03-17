@@ -1,11 +1,10 @@
 # Ambeelight
-Cross-platform ambilight for Yeelight.
+A cross-platform ambient lighting solution for Yeelight devices. The program will update Yeelight devices to display the color of your computer's display output creating an amazing atmosphere when watching videos or gaming.
 
 ## Platforms
-- Windows
-- Linux
-### macOS
-macOS is not supported yet, because it relies on `captrs` which does not support macOS yet either.
+- ✅ Windows
+- ✅ Linux
+- ❌ macOS ([captrs](https://crates.io/crates/captrs) doesn't support mac)
 
 ## Usage
 ### CLI
