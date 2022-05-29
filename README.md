@@ -1,10 +1,22 @@
 # Ambeelight
 A cross-platform ambient lighting solution for Yeelight devices. The program will update Yeelight devices to display the color of your computer's display output creating an amazing atmosphere when watching videos or gaming.
 
+## Table of Contents
+- [Platforms](Platforms)
+- [Installation](Installation)
+    - [Build from source](Build-from-source)
+    - [Download binary](Download-binary)
+- [Usage](Usage)
+    - [CLI](CLI)
+    - [IP](IP)
+    - [Host](Host)
+- [Contribution](Contribution)
+- [License](License) 
+
 ## Platforms
-- ✅ Windows
-- ✅ Linux
-- ❌ macOS ([captrs](https://crates.io/crates/captrs) doesn't support mac)
+- [x] Windows
+- [x] Linux
+- [ ] macOS ([captrs](https://crates.io/crates/captrs) doesn't support macOS)
 
 ## Installation
 ### Build from source
